@@ -1,5 +1,3 @@
-
-
 provider "aws" {
   region = "us-east-1"
 }
@@ -7,15 +5,14 @@ provider "aws" {
 # 1. S3 Bucket for File Uploads
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket2664"
+  # You do not need to specify an ACL here, as it will be private by default
 }
 
-
-
-# 3. DynamoDB Table to Store Metadata
+# 2. DynamoDB Table to Store Metadata
 resource "aws_dynamodb_table" "file_data" {
-  name           = "FileData2664"
-  hash_key       = "FileID"
-  billing_mode   = "PAY_PER_REQUEST"
+  name         = "FileData2664"
+  hash_key     = "FileID"
+  billing_mode = "PAY_PER_REQUEST"
 
   attribute {
     name = "FileID"
@@ -29,15 +26,13 @@ resource "aws_dynamodb_table" "file_data" {
 
   # Add a secondary index on the Timestamp attribute
   global_secondary_index {
-    name               = "TimestampIndex"
-    hash_key           = "Timestamp"
-    projection_type    = "ALL"
-    read_capacity      = 5
-    write_capacity     = 5
+    name            = "TimestampIndex"
+    hash_key        = "Timestamp"
+    projection_type = "ALL"
   }
 }
 
-# 4. IAM Role for Lambda Execution
+# 3. IAM Role for Lambda Execution
 resource "aws_iam_role" "lambda_role" {
   name               = "lambda-execution-role"
   assume_role_policy = jsonencode({
@@ -54,14 +49,14 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-# 5. Attach Lambda Basic Execution Role
+# 4. Attach Lambda Basic Execution Role
 resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
   name       = "lambda-policy-attachment"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   roles      = [aws_iam_role.lambda_role.name]
 }
 
-# 6. IAM Policy to Allow Lambda to Interact with DynamoDB
+# 5. IAM Policy to Allow Lambda to Interact with DynamoDB
 resource "aws_iam_policy" "dynamo_policy" {
   name        = "dynamo-policy"
   description = "Allows Lambda to interact with DynamoDB"
@@ -84,7 +79,7 @@ resource "aws_iam_policy_attachment" "dynamo_policy_attachment" {
   roles      = [aws_iam_role.lambda_role.name]
 }
 
-# 7. Lambda Function (Python)
+# 6. Lambda Function (Python)
 resource "aws_lambda_function" "s3_trigger_lambda" {
   function_name = "s3_trigger_lambda"
   role          = aws_iam_role.lambda_role.arn
@@ -100,7 +95,7 @@ resource "aws_lambda_function" "s3_trigger_lambda" {
   }
 }
 
-# 8. S3 Event Notification to Trigger Lambda
+# 7. S3 Event Notification to Trigger Lambda
 resource "aws_s3_bucket_notification" "s3_event_notification" {
   bucket = aws_s3_bucket.s3_bucket.id
 
@@ -117,7 +112,7 @@ resource "aws_s3_bucket_notification" "s3_event_notification" {
   ]
 }
 
-# 9. Lambda Permission for S3 to invoke Lambda
+# 8. Lambda Permission for S3 to invoke Lambda
 resource "aws_lambda_permission" "allow_s3_invocation" {
   statement_id  = "AllowExecutionFromS3"
   action        = "lambda:InvokeFunction"
