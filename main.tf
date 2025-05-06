@@ -104,4 +104,7 @@ resource "aws_s3_bucket_notification" "s3_event_notification" {
     aws_lambda_function.s3_trigger_lambda
   ]
 }
-
+resource "aws_s3_bucket_acl" "s3_bucket_acl" {
+  bucket = aws_s3_bucket.s3_bucket.bucket
+  acl    = "private"  # Set the ACL to 'private'
+}
