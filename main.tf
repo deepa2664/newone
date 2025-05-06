@@ -6,11 +6,13 @@ provider "aws" {
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket2664"
 
-  # Block public access settings
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls  = true
-  restrict_public_buckets = true
+  # Block public access settings (must be inside block_public_access)
+  block_public_access {
+    block_public_acls   = true
+    block_public_policy = true
+    ignore_public_acls  = true
+    restrict_public_buckets = true
+  }
 }
 
 # 2. DynamoDB Table to Store Metadata
@@ -28,7 +30,6 @@ resource "aws_dynamodb_table" "file_data" {
     name = "Timestamp"
     type = "S"
   }
-
 }
 
 # 3. IAM Role for Lambda Execution
