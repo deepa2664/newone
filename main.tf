@@ -19,10 +19,7 @@ resource "aws_dynamodb_table" "file_data" {
     type = "S"
   }
 
-  attribute {
-    name = "Timestamp"
-    type = "S"
-  }
+  
 }
 
 # 3. IAM Role for Lambda Execution
