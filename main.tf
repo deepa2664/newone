@@ -25,7 +25,7 @@ resource "aws_dynamodb_table" "file_data" {
     name = "FileID"
     type = "S"
   }
-
+  
   attribute {
     name = "Timestamp"
     type = "S"
