@@ -4,13 +4,13 @@ provider "aws" {
 
 # 1. S3 Bucket for File Uploads
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "my-file-upload-bucket"
+  bucket = "my-file-upload-bucket2664"
  
 }
 
 # 2. DynamoDB Table to Store Metadata
 resource "aws_dynamodb_table" "file_data" {
-  name           = "FileData"
+  name           = "FileData2664"
   hash_key       = "FileID"
   billing_mode   = "PAY_PER_REQUEST"
 
