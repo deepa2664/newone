@@ -5,7 +5,12 @@ provider "aws" {
 # 1. S3 Bucket for File Uploads
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket2664"
- 
+
+  # Disable Block Public Access if ACLs are needed (optional)
+  block_public_access {
+    block_public_acls = false
+    block_public_policy = false
+  }
 }
 
 # 2. DynamoDB Table to Store Metadata
@@ -19,7 +24,12 @@ resource "aws_dynamodb_table" "file_data" {
     type = "S"
   }
 
-  
+  attribute {
+    name = "Timestamp"
+    type = "S"
+  }
+
+  # You can optionally add Global Secondary Index (GSI) if needed
 }
 
 # 3. IAM Role for Lambda Execution
@@ -91,8 +101,8 @@ resource "aws_s3_bucket_notification" "s3_event_notification" {
 
   lambda_function {
     events = ["s3:ObjectCreated:*"]
-    filter_prefix = ""  # Optional: add a prefix filter
-    filter_suffix = ""  # Optional: add a suffix filter
+    filter_prefix = ""  # Optional
+    filter_suffix = ""  # Optional
 
     lambda_function_arn = aws_lambda_function.s3_trigger_lambda.arn
   }
@@ -101,7 +111,12 @@ resource "aws_s3_bucket_notification" "s3_event_notification" {
     aws_lambda_function.s3_trigger_lambda
   ]
 }
-resource "aws_s3_bucket_acl" "s3_bucket_acl" {
-  bucket = aws_s3_bucket.s3_bucket.bucket
-  acl    = "private"  # Set the ACL to 'private'
+
+# Lambda Permission for S3 to invoke Lambda
+resource "aws_lambda_permission" "allow_s3_invocation" {
+  statement_id  = "AllowExecutionFromS3"
+  action        = "lambda:InvokeFunction"
+  principal     = "s3.amazonaws.com"
+  function_name = aws_lambda_function.s3_trigger_lambda.function_name
+  source_arn    = aws_s3_bucket.s3_bucket.arn
 }
