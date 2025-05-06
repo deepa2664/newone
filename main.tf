@@ -8,11 +8,7 @@ resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket2664"
 }
 
-# 2. S3 Bucket ACL for Private Access
-resource "aws_s3_bucket_acl" "s3_bucket_acl" {
-  bucket = aws_s3_bucket.s3_bucket.bucket
-  acl    = "private"
-}
+
 
 # 3. DynamoDB Table to Store Metadata
 resource "aws_dynamodb_table" "file_data" {
