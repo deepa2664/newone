@@ -5,7 +5,7 @@ provider "aws" {
 # 1. S3 Bucket for File Uploads
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket"
-  acl    = "private"
+ 
 }
 
 # 2. DynamoDB Table to Store Metadata
