@@ -6,11 +6,11 @@ provider "aws" {
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket2664"
 
-  # Disable Block Public Access if ACLs are needed (optional)
-  block_public_access {
-    block_public_acls = false
-    block_public_policy = false
-  }
+  # Block public access settings
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+  restrict_public_buckets = true
 }
 
 # 2. DynamoDB Table to Store Metadata
@@ -29,7 +29,6 @@ resource "aws_dynamodb_table" "file_data" {
     type = "S"
   }
 
-  # You can optionally add Global Secondary Index (GSI) if needed
 }
 
 # 3. IAM Role for Lambda Execution
