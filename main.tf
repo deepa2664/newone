@@ -5,14 +5,9 @@ provider "aws" {
 # 1. S3 Bucket for File Uploads
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = "my-file-upload-bucket2664"
-
-  # Block public access settings (must be inside block_public_access)
-  block_public_access {
-    block_public_acls   = true
-    block_public_policy = true
-    ignore_public_acls  = true
-    restrict_public_buckets = true
-  }
+  
+  # Set ACL directly
+  acl = "private"
 }
 
 # 2. DynamoDB Table to Store Metadata
